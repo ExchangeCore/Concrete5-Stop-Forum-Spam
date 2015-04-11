@@ -18,12 +18,13 @@ class EcSfsController
         $response = Core::make('helper/file')->getContents('http://api.stopforumspam.org/api?' . http_build_url($query));
         if ($response) {
             $response = json_decode($response);
-            
-            if (isset($response['ip']) && $response['ip']['appears'] && $response['ip']['confidence'] > 90) {
+            $minConfidence = \Package::getByHandle('ec_sfs')->getConfig()->get('confidence.min', 90);
+
+            if (isset($response['ip']) && $response['ip']['appears'] && $response['ip']['confidence'] > $minConfidence) {
                 return false;
             }
             
-            if (isset($response['email']) && $response['email']['appears'] && $response['email']['confidence'] > 90) {
+            if (isset($response['email']) && $response['email']['appears'] && $response['email']['confidence'] > $minConfidence) {
                 return false;
             }
         }
@@ -67,6 +68,13 @@ class EcSfsController
             $config->save('api.key', null);
         } else {
             $config->save('api.key', $apiKey);
+        }
+
+        $minConfidence = trim($args['minConfidence']);
+        if (!empty($minConfidence) && is_numeric($minConfidence)) {
+            $config->save('confidence.min', $args['minConfidence']);
+        } else {
+            $config->save('confidence.min', 90);
         }
     }
 }
