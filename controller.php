@@ -4,12 +4,11 @@ namespace Concrete\Package\EcSfs;
 
 use Concrete\Core\Antispam\Library;
 use Concrete\Core\Package\Package;
-use Loader;
 
 class Controller extends Package
 {
     protected $pkgHandle = 'ec_sfs';
-    protected $appVersionRequired = '5.7.3.1';
+    protected $appVersionRequired = '5.7.4';
     protected $pkgVersion = '0.9.0';
 
     public function getPackageName()
